@@ -606,7 +606,7 @@ async function amendStep1() {
   
   // Call API to check booking
   try {
-    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/89bd79f7-8f11-4cd2-b3a4-b6e16cf15731', {
+    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/a98b147a-dccd-45f3-80d2-e299e3f44396', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ BookingID: bookingId })
@@ -752,7 +752,7 @@ async function cancelStep1() {
   
   // Call API to check booking
   try {
-    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/b5b44bb1-b78c-43c4-a8f2-cef41b1a29bd', {
+    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/f85b0e5e-bed2-4854-b6b8-d8f498ee8702', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ BookingID: bookingId })
@@ -786,7 +786,7 @@ async function submitCancellation() {
   const bookingId = document.getElementById('cancel-booking-id').value.trim().toUpperCase();
   
   try {
-    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/7c2dd18f-a21f-4e51-b47c-1f054deaad29', {
+    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/250f0d67-149a-472b-bddc-5e9036223073', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ BookingID: bookingId })
