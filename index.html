@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Your Booking</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 500px;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+  }
+  
+  .header h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  
+  .header p {
+    opacity: 0.9;
+    font-size: 14px;
+  }
+  
+  .content {
+    padding: 30px;
+  }
+  
+  /* Toggle Switch */
+  .action-switch {
+    display: flex;
+    background: #f1f3f5;
+    border-radius: 50px;
+    padding: 5px;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  .switch-option {
+    flex: 1;
+    padding: 12px 20px;
+    text-align: center;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 14px;
+    z-index: 1;
+  }
+  
+  .switch-option.active {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    color: #667eea;
+  }
+  
+  .switch-option:not(.active) {
+    color: #868e96;
+  }
+  
+  /* Form Sections */
+  .form-section {
+    display: none;
+  }
+  
+  .form-section.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .form-step {
+    display: none;
+  }
+  
+  .form-step.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 10px;
+  }
+  
+  .step-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #dee2e6;
+    transition: all 0.3s ease;
+  }
+  
+  .step-dot.active {
+    background: #667eea;
+    width: 30px;
+    border-radius: 5px;
+  }
+  
+  .step-dot.completed {
+    background: #51cf66;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+  
+  .info-box {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .info-box.error {
+    background: #fff5f5;
+    border-left-color: #ff6b6b;
+  }
+  
+  .info-box.success {
+    background: #f0fdf4;
+    border-left-color: #51cf66;
+  }
+  
+  .info-box p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #495057;
+  }
+  
+  .info-box strong {
+    color: #667eea;
+  }
+  
+  .info-box.error strong {
+    color: #ff6b6b;
+  }
+  
+  .info-box.success strong {
+    color: #51cf66;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  button {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .btn-secondary {
+    background: #e9ecef;
+    color: #495057;
+  }
+  
+  .btn-secondary:hover {
+    background: #dee2e6;
+  }
+  
+  .btn-danger {
+    background: #ff6b6b;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .hidden {
+    display: none !important;
+  }
+  
+  .confirmation-icon {
+    text-align: center;
+    font-size: 60px;
+    margin-bottom: 20px;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .mt-20 {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Manage Your Booking</h1>
+    <p>Amend or cancel your reservation</p>
+  </div>
+  
+  <div class="content">
+    <!-- Action Switch -->
+    <div class="action-switch">
+      <div class="switch-option active" onclick="switchAction('amend')">
+        Amend Booking
+      </div>
+      <div class="switch-option" onclick="switchAction('cancel')">
+        Cancel Booking
+      </div>
+    </div>
+    
+    <!-- AMEND SECTION -->
+    <div id="amend-section" class="form-section active">
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step-dot active" data-step="1"></div>
+        <div class="step-dot" data-step="2"></div>
+        <div class="step-dot" data-step="3"></div>
+        <div class="step-dot" data-step="4"></div>
+      </div>
+      
+      <!-- Step 1: Get Booking ID -->
+      <div class="form-step active" data-step="1">
+        <h2 style="margin-bottom: 20px; color: #333;">Enter Your Booking Details</h2>
+        <div class="form-group">
+          <label for="amend-booking-id">Booking Reference Number</label>
+          <input type="text" id="amend-booking-id" placeholder="e.g., BK9344" />
+        </div>
+        <div class="button-group">
+          <button class="btn-primary" onclick="amendStep1()">Continue</button>
+        </div>
+      </div>
+      
+      <!-- Step 2: Show Current Details -->
+      <div class="form-step" data-step="2">
+        <div class="loading hidden" id="amend-loading">
+          <div class="spinner"></div>
+          <p style="margin-top: 15px; color: #868e96;">Looking up your booking...</p>
+        </div>
+        
+        <div id="amend-current-details" class="hidden">
+          <h2 style="margin-bottom: 20px; color: #333;">Your Current Booking</h2>
+          <div class="info-box">
+            <p><strong>Name:</strong> <span id="current-name"></span></p>
+            <p><strong>Date:</strong> <span id="current-date"></span></p>
+            <p><strong>Time:</strong> <span id="current-time"></span></p>
+            <p><strong>Party Size:</strong> <span id="current-party"></span> people</p>
+          </div>
+          <p style="margin-bottom: 20px; color: #495057;">What would you like to change?</p>
+          <div class="button-group">
+            <button class="btn-secondary" onclick="amendGoBack(2)">Back</button>
+            <button class="btn-primary" onclick="amendStep2()">Continue</button>
+          </div>
+        </div>
+        
+        <div id="amend-error" class="hidden">
+          <div class="info-box error">
+            <p><strong>Booking Not Found</strong></p>
+            <p>We couldn't find a booking with that reference number. Please check and try again.</p>
+          </div>
+          <div class="button-group">
+            <button class="btn-primary" onclick="amendGoBack(2)">Try Again</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Step 3: Collect New Information -->
+      <div class="form-step" data-step="3">
+        <h2 style="margin-bottom: 20px; color: #333;">Update Your Booking</h2>
+        <p style="margin-bottom: 20px; color: #868e96; font-size: 13px;">Leave fields unchanged if you don't want to modify them</p>
+        
+        <div class="form-group">
+          <label for="new-date">New Date (or leave as is)</label>
+          <input type="date" id="new-date" />
+        </div>
+        
+        <div class="form-group">
+          <label for="new-time">New Time (or leave as is)</label>
+          <input type="time" id="new-time" />
+        </div>
+        
+        <div class="form-group">
+          <label for="new-party">New Party Size (or leave as is)</label>
+          <input type="number" id="new-party" min="1" max="20" placeholder="Number of people" />
+        </div>
+        
+        <div class="button-group">
+          <button class="btn-secondary" onclick="amendGoBack(3)">Back</button>
+          <button class="btn-primary" onclick="amendStep3()">Continue</button>
+        </div>
+      </div>
+      
+      <!-- Step 4: Confirm Changes -->
+      <div class="form-step" data-step="4">
+        <h2 style="margin-bottom: 20px; color: #333;">Confirm Your Changes</h2>
+        <div class="info-box">
+          <p><strong>Updated Booking Details:</strong></p>
+          <p><strong>Date:</strong> <span id="confirm-date"></span></p>
+          <p><strong>Time:</strong> <span id="confirm-time"></span></p>
+          <p><strong>Party Size:</strong> <span id="confirm-party"></span> people</p>
+        </div>
+        <p style="margin-bottom: 20px; color: #495057;">Is this correct?</p>
+        <div class="button-group">
+          <button class="btn-secondary" onclick="amendGoBack(4)">Back</button>
+          <button class="btn-primary" onclick="submitAmendment()">Confirm Changes</button>
+        </div>
+      </div>
+      
+      <!-- Step 4.5: Time Not Available Error -->
+      <div class="form-step" data-step="error">
+        <div class="confirmation-icon">❌</div>
+        <div class="text-center">
+          <h2 style="margin-bottom: 15px; color: #ff6b6b;">Time Not Available</h2>
+          <div class="info-box error">
+            <p id="unavailable-message">Sorry, that time slot is not available. Please choose a different date or time.</p>
+          </div>
+          <div class="button-group">
+            <button class="btn-primary" onclick="amendGoBack('error')">Choose Different Time</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Step 5: Success Message -->
+      <div class="form-step" data-step="5">
+        <div class="confirmation-icon">✅</div>
+        <div class="text-center">
+          <h2 style="margin-bottom: 15px; color: #51cf66;">Booking Updated!</h2>
+          <p style="color: #495057; margin-bottom: 20px;">Your reservation has been successfully amended. You'll receive a confirmation email shortly.</p>
+          <div class="info-box success">
+            <p><strong>New Booking Details:</strong></p>
+            <p><strong>Date:</strong> <span id="final-date"></span></p>
+            <p><strong>Time:</strong> <span id="final-time"></span></p>
+            <p><strong>Party Size:</strong> <span id="final-party"></span> people</p>
+            <p><strong>Reference:</strong> <span id="final-ref"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CANCEL SECTION -->
+    <div id="cancel-section" class="form-section">
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step-dot active" data-step="1"></div>
+        <div class="step-dot" data-step="2"></div>
+        <div class="step-dot" data-step="3"></div>
+      </div>
+      
+      <!-- Step 1: Get Booking ID -->
+      <div class="form-step active" data-step="1">
+        <h2 style="margin-bottom: 20px; color: #333;">Enter Your Booking Details</h2>
+        <div class="form-group">
+          <label for="cancel-booking-id">Booking Reference Number</label>
+          <input type="text" id="cancel-booking-id" placeholder="e.g., BK9344" />
+        </div>
+        <div class="button-group">
+          <button class="btn-primary" onclick="cancelStep1()">Continue</button>
+        </div>
+      </div>
+      
+      <!-- Step 2: Show Details & Confirm -->
+      <div class="form-step" data-step="2">
+        <div class="loading hidden" id="cancel-loading">
+          <div class="spinner"></div>
+          <p style="margin-top: 15px; color: #868e96;">Looking up your booking...</p>
+        </div>
+        
+        <div id="cancel-current-details" class="hidden">
+          <h2 style="margin-bottom: 20px; color: #333;">Confirm Cancellation</h2>
+          <div class="info-box">
+            <p><strong>Name:</strong> <span id="cancel-name"></span></p>
+            <p><strong>Date:</strong> <span id="cancel-date"></span></p>
+            <p><strong>Time:</strong> <span id="cancel-time"></span></p>
+            <p><strong>Party Size:</strong> <span id="cancel-party"></span> people</p>
+          </div>
+          <p style="margin-bottom: 20px; color: #495057;">Is this the booking you'd like to cancel?</p>
+          <div class="button-group">
+            <button class="btn-secondary" onclick="cancelGoBack(2)">No, Go Back</button>
+            <button class="btn-danger" onclick="submitCancellation()">Yes, Cancel Booking</button>
+          </div>
+        </div>
+        
+        <div id="cancel-error" class="hidden">
+          <div class="info-box error">
+            <p><strong>Booking Not Found</strong></p>
+            <p>We couldn't find a booking with that reference number. Please check and try again.</p>
+          </div>
+          <div class="button-group">
+            <button class="btn-primary" onclick="cancelGoBack(2)">Try Again</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Step 3: Success Message -->
+      <div class="form-step" data-step="3">
+        <div class="confirmation-icon">✅</div>
+        <div class="text-center">
+          <h2 style="margin-bottom: 15px; color: #51cf66;">Booking Cancelled</h2>
+          <p style="color: #495057; margin-bottom: 20px;">Your reservation has been successfully cancelled. You'll receive a confirmation email shortly.</p>
+          <div class="info-box">
+            <p><strong>Cancelled Booking:</strong></p>
+            <p><strong>Date:</strong> <span id="cancelled-date"></span></p>
+            <p><strong>Time:</strong> <span id="cancelled-time"></span></p>
+            <p><strong>Reference:</strong> <span id="cancelled-ref"></span></p>
+          </div>
+          <p style="color: #868e96; font-size: 13px; margin-top: 20px;">We hope to welcome you again soon!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// State management
+let currentAction = 'amend';
+let currentStep = { amend: 1, cancel: 1 };
+let bookingData = null;
+
+// Get URL parameters
+function getUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    id: params.get('id'),
+    phone: params.get('phone')
+  };
+}
+
+// Initialize with URL params if present
+window.addEventListener('DOMContentLoaded', () => {
+  const params = getUrlParams();
+  if (params.id) {
+    document.getElementById('amend-booking-id').value = params.id;
+    document.getElementById('cancel-booking-id').value = params.id;
+  }
+});
+
+// Switch between amend and cancel
+function switchAction(action) {
+  currentAction = action;
+  
+  // Update switch UI
+  document.querySelectorAll('.switch-option').forEach(el => {
+    el.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  // Update sections
+  document.querySelectorAll('.form-section').forEach(el => {
+    el.classList.remove('active');
+  });
+  document.getElementById(action + '-section').classList.add('active');
+  
+  // Reset to step 1
+  goToStep(action, 1);
+}
+
+// Navigate to specific step
+function goToStep(action, step) {
+  const section = document.getElementById(action + '-section');
+  const steps = section.querySelectorAll('.form-step');
+  const dots = section.querySelectorAll('.step-dot');
+  
+  // Handle special "error" step for amend
+  if (step === 'error') {
+    steps.forEach(el => el.classList.remove('active'));
+    section.querySelector('[data-step="error"]').classList.add('active');
+    return;
+  }
+  
+  // Update steps
+  steps.forEach(el => el.classList.remove('active'));
+  steps[step - 1].classList.add('active');
+  
+  // Update dots
+  dots.forEach((dot, index) => {
+    dot.classList.remove('active', 'completed');
+    if (index + 1 < step) {
+      dot.classList.add('completed');
+    } else if (index + 1 === step) {
+      dot.classList.add('active');
+    }
+  });
+  
+  currentStep[action] = step;
+}
+
+// AMEND FLOW
+async function amendStep1() {
+  const bookingId = document.getElementById('amend-booking-id').value.trim().toUpperCase();
+  
+  if (!bookingId) {
+    alert('Please enter your booking reference number');
+    return;
+  }
+  
+  if (!bookingId.startsWith('BK')) {
+    alert('Booking reference should start with BK (e.g., BK9344)');
+    return;
+  }
+  
+  goToStep('amend', 2);
+  
+  // Show loading
+  document.getElementById('amend-loading').classList.remove('hidden');
+  document.getElementById('amend-current-details').classList.add('hidden');
+  document.getElementById('amend-error').classList.add('hidden');
+  
+  // Call API to check booking
+  try {
+    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/89bd79f7-8f11-4cd2-b3a4-b6e16cf15731', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ BookingID: bookingId })
+    });
+    
+    const data = await response.json();
+    console.log('Amend checker response:', data);
+    
+    // Hide loading
+    document.getElementById('amend-loading').classList.add('hidden');
+    
+    if (data && data.Name) {
+      // Booking found
+      bookingData = data;
+      document.getElementById('current-name').textContent = data.Name;
+      document.getElementById('current-date').textContent = data.BookingDate;
+      document.getElementById('current-time').textContent = data.BookingTime;
+      document.getElementById('current-party').textContent = data.PartySize;
+      document.getElementById('amend-current-details').classList.remove('hidden');
+    } else {
+      // Booking not found
+      document.getElementById('amend-error').classList.remove('hidden');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    document.getElementById('amend-loading').classList.add('hidden');
+    document.getElementById('amend-error').classList.remove('hidden');
+  }
+}
+
+function amendStep2() {
+  goToStep('amend', 3);
+  
+  // Pre-fill current values
+  if (bookingData) {
+    // Convert date to YYYY-MM-DD format for input
+    const dateParts = bookingData.BookingDate.split('/');
+    const dateValue = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+    document.getElementById('new-date').value = dateValue;
+    document.getElementById('new-time').value = bookingData.BookingTime;
+    document.getElementById('new-party').value = bookingData.PartySize;
+  }
+}
+
+function amendStep3() {
+  const newDate = document.getElementById('new-date').value;
+  const newTime = document.getElementById('new-time').value;
+  const newParty = document.getElementById('new-party').value;
+  
+  if (!newDate || !newTime || !newParty) {
+    alert('Please fill in all fields');
+    return;
+  }
+  
+  // Convert date to DD/MM/YYYY for display
+  const dateObj = new Date(newDate);
+  const displayDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+  
+  document.getElementById('confirm-date').textContent = displayDate;
+  document.getElementById('confirm-time').textContent = newTime;
+  document.getElementById('confirm-party').textContent = newParty;
+  
+  goToStep('amend', 4);
+}
+
+async function submitAmendment() {
+  const newDate = document.getElementById('new-date').value;
+  const newTime = document.getElementById('new-time').value;
+  const newParty = document.getElementById('new-party').value;
+  const bookingId = document.getElementById('amend-booking-id').value.trim().toUpperCase();
+  
+  // Convert date to DD/MM/YYYY
+  const dateObj = new Date(newDate);
+  const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+  
+  try {
+    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/a75095f5-5ccc-4579-b74a-be841ddfdbfa', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        BookingID: bookingId,
+        Date: formattedDate,
+        Time: newTime,
+        PartySize: parseInt(newParty)
+      })
+    });
+    
+    const data = await response.json();
+    console.log('Response from n8n:', data);
+    
+    // Check if successful
+    if (data.success === true) {
+      // Show success screen
+      document.getElementById('final-date').textContent = formattedDate;
+      document.getElementById('final-time').textContent = newTime;
+      document.getElementById('final-party').textContent = newParty;
+      document.getElementById('final-ref').textContent = bookingId;
+      
+      goToStep('amend', 5);
+    } else if (data.success === false) {
+      // Show error - not available
+      document.getElementById('unavailable-message').textContent = data.message || 'Sorry, that time slot is not available. Please choose a different time.';
+      goToStep('amend', 'error');
+    } else {
+      // Unknown response format
+      console.error('Unexpected response format:', data);
+      alert('There was an error updating your booking. Please try again or contact us directly.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('There was an error updating your booking. Please try again or contact us directly.');
+  }
+}
+
+function amendGoBack(fromStep) {
+  if (fromStep === 'error') {
+    goToStep('amend', 3); // Go back to change details
+  } else {
+    goToStep('amend', fromStep - 1);
+  }
+}
+
+// CANCEL FLOW
+async function cancelStep1() {
+  const bookingId = document.getElementById('cancel-booking-id').value.trim().toUpperCase();
+  
+  if (!bookingId) {
+    alert('Please enter your booking reference number');
+    return;
+  }
+  
+  if (!bookingId.startsWith('BK')) {
+    alert('Booking reference should start with BK (e.g., BK9344)');
+    return;
+  }
+  
+  goToStep('cancel', 2);
+  
+  // Show loading
+  document.getElementById('cancel-loading').classList.remove('hidden');
+  document.getElementById('cancel-current-details').classList.add('hidden');
+  document.getElementById('cancel-error').classList.add('hidden');
+  
+  // Call API to check booking
+  try {
+    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/b5b44bb1-b78c-43c4-a8f2-cef41b1a29bd', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ BookingID: bookingId })
+    });
+    
+    const data = await response.json();
+    
+    // Hide loading
+    document.getElementById('cancel-loading').classList.add('hidden');
+    
+    if (data && data.Name) {
+      // Booking found
+      bookingData = data;
+      document.getElementById('cancel-name').textContent = data.Name;
+      document.getElementById('cancel-date').textContent = data.BookingDate;
+      document.getElementById('cancel-time').textContent = data.BookingTime;
+      document.getElementById('cancel-party').textContent = data.PartySize;
+      document.getElementById('cancel-current-details').classList.remove('hidden');
+    } else {
+      // Booking not found
+      document.getElementById('cancel-error').classList.remove('hidden');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    document.getElementById('cancel-loading').classList.add('hidden');
+    document.getElementById('cancel-error').classList.remove('hidden');
+  }
+}
+
+async function submitCancellation() {
+  const bookingId = document.getElementById('cancel-booking-id').value.trim().toUpperCase();
+  
+  try {
+    const response = await fetch('https://evansautomations.app.n8n.cloud/webhook/7c2dd18f-a21f-4e51-b47c-1f054deaad29', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ BookingID: bookingId })
+    });
+    
+    const data = await response.json();
+    
+    // Show success
+    document.getElementById('cancelled-date').textContent = bookingData.BookingDate;
+    document.getElementById('cancelled-time').textContent = bookingData.BookingTime;
+    document.getElementById('cancelled-ref').textContent = bookingId;
+    
+    goToStep('cancel', 3);
+  } catch (error) {
+    console.error('Error:', error);
+    alert('There was an error cancelling your booking. Please try again or contact us directly.');
+  }
+}
+
+function cancelGoBack(fromStep) {
+  goToStep('cancel', fromStep - 1);
+}
+</script>
+
+</body>
+</html>
