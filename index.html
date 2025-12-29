@@ -671,7 +671,6 @@ function amendStep3() {
   
   goToStep('amend', 4);
 }
-
 async function submitAmendment() {
   const newDate = document.getElementById('new-date').value;
   const newTime = document.getElementById('new-time').value;
@@ -693,6 +692,12 @@ async function submitAmendment() {
         PartySize: parseInt(newParty)
       })
     });
+    
+    // Check if response is OK first
+    if (!response.ok) {
+      console.error('HTTP error! status:', response.status);
+      throw new Error('Server error: ' + response.status);
+    }
     
     const data = await response.json();
     console.log('Response from n8n:', data);
@@ -716,19 +721,10 @@ async function submitAmendment() {
       alert('There was an error updating your booking. Please try again or contact us directly.');
     }
   } catch (error) {
-    console.error('Error:', error);
-    alert('There was an error updating your booking. Please try again or contact us directly.');
+    console.error('Fetch error:', error);
+    alert('There was an error connecting to the server. Please try again or contact us directly.');
   }
 }
-
-function amendGoBack(fromStep) {
-  if (fromStep === 'error') {
-    goToStep('amend', 3); // Go back to change details
-  } else {
-    goToStep('amend', fromStep - 1);
-  }
-}
-
 // CANCEL FLOW
 async function cancelStep1() {
   const bookingId = document.getElementById('cancel-booking-id').value.trim().toUpperCase();
