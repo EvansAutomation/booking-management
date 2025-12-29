@@ -725,6 +725,13 @@ async function submitAmendment() {
     alert('There was an error connecting to the server. Please try again or contact us directly.');
   }
 }
+function amendGoBack(fromStep) {
+  if (fromStep === 'error') {
+    goToStep('amend', 3); // Go back to change details
+  } else {
+    goToStep('amend', fromStep - 1);
+  }
+} 
 // CANCEL FLOW
 async function cancelStep1() {
   const bookingId = document.getElementById('cancel-booking-id').value.trim().toUpperCase();
